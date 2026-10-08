@@ -30,8 +30,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the local development server |
-| `npm run build` | Create an optimized production build |
-| `npm run start` | Serve the production build |
+| `npm run build` | Create a static production export in `out/` |
 | `npm run lint` | Run ESLint |
 | `npm run format:css` | Format the global stylesheet with Prettier |
 
@@ -45,6 +44,12 @@ public/              Static assets, including the profile portrait
 ```
 
 The route at `app/page.tsx` composes the page sections. Edit the content in `data/portfolio.ts`; styles are in `app/globals.css`.
+
+## GitHub Pages deployment
+
+The static site is published at [oscarpallazhco.github.io](https://oscarpallazhco.github.io/) from the root of the `master` branch in [OscarPallazhco.github.io](https://github.com/OscarPallazhco/OscarPallazhco.github.io). This project uses Next.js static export, so `npm run build` creates the deployable files in `out/` rather than a server-run `.next/` application.
+
+To publish an update, build the site, copy the contents of `out/` into the root of the Pages repository, keep the `.nojekyll` marker there, then commit and push that repository's `master` branch. The previous Pages content is preserved on its `backup/before-portfolio-deploy` branch.
 
 ## Contact links
 
