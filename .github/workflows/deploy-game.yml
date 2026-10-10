@@ -1,0 +1,83 @@
+name: Deploy game
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages-publish
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out deployment workflow
+        uses: actions/checkout@v4
+
+      - name: Check required secrets
+        env:
+          INSTANT_SOURCE_TOKEN: ${{ secrets.INSTANT_SOURCE_TOKEN }}
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+        run: |
+          if [[ -z "$INSTANT_SOURCE_TOKEN" ]]; then
+            echo "::error title=Source access unavailable::Add INSTANT_SOURCE_TOKEN with read-only access to OscarPallazhco/Instant."
+            exit 1
+          fi
+          if [[ -z "$PAGES_DEPLOY_TOKEN" ]]; then
+            echo "::error title=Pages deployment unavailable::Add PAGES_DEPLOY_TOKEN with write access to OscarPallazhco.github.io."
+            exit 1
+          fi
+
+      - name: Check out private game source
+        uses: actions/checkout@v4
+        with:
+          repository: OscarPallazhco/Instant
+          ref: main
+          path: game-source
+          token: ${{ secrets.INSTANT_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      - name: Check out GitHub Pages repository
+        uses: actions/checkout@v4
+        with:
+          repository: OscarPallazhco/OscarPallazhco.github.io
+          ref: master
+          path: pages
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          persist-credentials: false
+
+      - name: Deploy only the game route
+        working-directory: pages
+        env:
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+        run: |
+          GAME_SHA="$(git -C ../game-source rev-parse HEAD)"
+          test -f ../game-source/index.html
+          test -f ../game-source/css/style.css
+          test -f ../game-source/js/game.js
+
+          mkdir -p game .deploy-state
+          rsync -a --delete \
+            --exclude='.git/' \
+            ../game-source/index.html \
+            ../game-source/css \
+            ../game-source/js \
+            game/
+          printf '%s\n' "$GAME_SHA" > .deploy-state/game-source.txt
+          touch .nojekyll
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- .nojekyll game/ .deploy-state/game-source.txt
+
+          if git diff --cached --quiet; then
+            echo "The game is already up to date."
+            exit 0
+          fi
+
+          git commit -m "Deploy OscarPallazhco/Instant@main (${GAME_SHA::7}) to /game/"
+          auth_header="$(printf 'x-access-token:%s' "$PAGES_DEPLOY_TOKEN" | base64 -w 0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${auth_header}" push origin HEAD:master
