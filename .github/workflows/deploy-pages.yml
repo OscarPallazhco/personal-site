@@ -1,0 +1,77 @@
+name: Build and deploy portfolio
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Check deployment secret
+        id: deployment-secret
+        env:
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+        run: |
+          if [[ -n "$PAGES_DEPLOY_TOKEN" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Deployment skipped::Add the PAGES_DEPLOY_TOKEN repository secret to enable publishing."
+          fi
+
+      - name: Check out GitHub Pages repository
+        if: steps.deployment-secret.outputs.available == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: OscarPallazhco/OscarPallazhco.github.io
+          ref: master
+          path: pages
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+
+      - name: Copy static export
+        if: steps.deployment-secret.outputs.available == 'true'
+        run: |
+          rsync -a --delete --exclude='.git/' out/ pages/
+          touch pages/.nojekyll
+
+      - name: Commit and push deployment
+        if: steps.deployment-secret.outputs.available == 'true'
+        working-directory: pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "The published site is already up to date."
+          else
+            git commit -m "Deploy portfolio from ${GITHUB_SHA::7}"
+            git push origin HEAD:master
+          fi

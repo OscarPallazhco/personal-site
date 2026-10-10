@@ -49,7 +49,9 @@ The route at `app/page.tsx` composes the page sections. Edit the content in `dat
 
 The static site is published at [oscarpallazhco.github.io](https://oscarpallazhco.github.io/) from the root of the `master` branch in [OscarPallazhco.github.io](https://github.com/OscarPallazhco/OscarPallazhco.github.io). This project uses Next.js static export, so `npm run build` creates the deployable files in `out/` rather than a server-run `.next/` application.
 
-To publish an update, build the site, copy the contents of `out/` into the root of the Pages repository, keep the `.nojekyll` marker there, then commit and push that repository's `master` branch. The previous Pages content is preserved on its `backup/before-portfolio-deploy` branch.
+The `Build and deploy portfolio` GitHub Actions workflow runs on every push to `main` and can also be started manually. It runs lint and build, then publishes the contents of `out/` to the Pages repository's `master` branch. The previous Pages content is preserved on its `backup/before-portfolio-deploy` branch.
+
+To enable cross-repository publishing, add a fine-grained personal access token as the `PAGES_DEPLOY_TOKEN` Actions secret in this repository. Limit the token to the `OscarPallazhco.github.io` repository and grant **Contents: Read and write**. Until that secret is configured, Actions will still validate and build the site, then skip the publish steps. Never commit or share the token value.
 
 ## Contact links
 
