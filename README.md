@@ -47,6 +47,8 @@ The route at `app/page.tsx` composes the page sections. Edit the content in `dat
 
 The header language selector switches the portfolio between English and Spanish during the current visit. The footer's update time is generated during the static build and displayed in Ecuador time.
 
+The static export includes `/sitemap.xml` and `/robots.txt` for search crawlers. After deployment, submit `https://oscarpallazhco.github.io/sitemap.xml` under **Sitemaps** in Google Search Console.
+
 ## GitHub Pages deployment
 
 The static site is published at [oscarpallazhco.github.io](https://oscarpallazhco.github.io/) from the root of the `master` branch in [OscarPallazhco.github.io](https://github.com/OscarPallazhco/OscarPallazhco.github.io). This project uses Next.js static export, so `npm run build` creates the deployable files in `out/` rather than a server-run `.next/` application.
