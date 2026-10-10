@@ -5,17 +5,22 @@ import { HeroSection } from "@/components/hero-section";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { WorkSection } from "@/components/work-section";
+import { LanguageProvider } from "@/components/language-provider";
 
 export default function Home() {
+  const builtAt = new Date().toISOString();
+
   return (
-    <main>
-      <SiteHeader />
-      <HeroSection />
-      <AboutSection />
-      <CareerSection />
-      <WorkSection />
-      <ContactSection />
-      <SiteFooter />
-    </main>
+    <LanguageProvider>
+      <main>
+        <SiteHeader />
+        <HeroSection />
+        <AboutSection />
+        <CareerSection />
+        <WorkSection />
+        <ContactSection />
+        <SiteFooter builtAt={builtAt} />
+      </main>
+    </LanguageProvider>
   );
 }

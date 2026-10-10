@@ -72,6 +72,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "The published site is already up to date."
           else
-            git commit -m "Deploy portfolio from ${GITHUB_SHA::7}"
+            git commit -m "Deploy ${GITHUB_REPOSITORY}@${GITHUB_REF_NAME} (${GITHUB_SHA::7})"
             git push origin HEAD:master
           fi

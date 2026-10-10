@@ -27,12 +27,12 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the local development server |
-| `npm run build` | Create a static production export in `out/` |
-| `npm run lint` | Run ESLint |
-| `npm run format:css` | Format the global stylesheet with Prettier |
+| Command              | Purpose                                     |
+| -------------------- | ------------------------------------------- |
+| `npm run dev`        | Start the local development server          |
+| `npm run build`      | Create a static production export in `out/` |
+| `npm run lint`       | Run ESLint                                  |
+| `npm run format:css` | Format the global stylesheet with Prettier  |
 
 ## Project layout
 
@@ -45,11 +45,13 @@ public/              Static assets, including the profile portrait
 
 The route at `app/page.tsx` composes the page sections. Edit the content in `data/portfolio.ts`; styles are in `app/globals.css`.
 
+The header language selector switches the portfolio between English and Spanish during the current visit. The footer's update time is generated during the static build and displayed in Ecuador time.
+
 ## GitHub Pages deployment
 
 The static site is published at [oscarpallazhco.github.io](https://oscarpallazhco.github.io/) from the root of the `master` branch in [OscarPallazhco.github.io](https://github.com/OscarPallazhco/OscarPallazhco.github.io). This project uses Next.js static export, so `npm run build` creates the deployable files in `out/` rather than a server-run `.next/` application.
 
-The `Build and deploy portfolio` GitHub Actions workflow runs on every push to `main` and can also be started manually. It runs lint and build, then publishes the contents of `out/` to the Pages repository's `master` branch. The previous Pages content is preserved on its `backup/before-portfolio-deploy` branch.
+The `Build and deploy portfolio` GitHub Actions workflow runs on every push to `main` and can also be started manually. It runs lint and build, then publishes the contents of `out/` to the Pages repository's `master` branch. The deployment commit message includes the source repository, source branch, and short commit SHA. The previous Pages content is preserved on its `backup/before-portfolio-deploy` branch.
 
 To enable cross-repository publishing, add a fine-grained personal access token as the `PAGES_DEPLOY_TOKEN` Actions secret in this repository. Limit the token to the `OscarPallazhco.github.io` repository and grant **Contents: Read and write**. Until that secret is configured, Actions will still validate and build the site, then skip the publish steps. Never commit or share the token value.
 
