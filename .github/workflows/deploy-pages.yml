@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: portfolio-pages-deploy
+  group: github-pages-publish
   cancel-in-progress: false
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
       - name: Copy static export
         if: steps.deployment-secret.outputs.available == 'true'
         run: |
-          rsync -a --delete --exclude='.git/' out/ pages/
+          rsync -a --exclude='.git/' out/ pages/
           touch pages/.nojekyll
 
       - name: Commit and push deployment

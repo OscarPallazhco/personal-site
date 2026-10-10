@@ -1,0 +1,122 @@
+name: Deploy Kanban demo
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/deploy-kanban-demo.yml
+      - deployment/kanban/**
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages-publish
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out personal-site deployment config
+        uses: actions/checkout@v4
+
+      - name: Check out Kanban source branch
+        uses: actions/checkout@v4
+        with:
+          repository: OscarPallazhco/kanban
+          ref: feature/kanban-mvp-antigravity
+          path: kanban
+          persist-credentials: false
+
+      - name: Check deployment secret
+        id: deployment-secret
+        env:
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+        run: |
+          if [[ -n "$PAGES_DEPLOY_TOKEN" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Deployment skipped::Add the PAGES_DEPLOY_TOKEN repository secret to enable publishing."
+          fi
+
+      - name: Check out GitHub Pages repository
+        if: steps.deployment-secret.outputs.available == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: OscarPallazhco/OscarPallazhco.github.io
+          ref: master
+          path: pages
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+
+      - name: Check whether Kanban needs deployment
+        if: steps.deployment-secret.outputs.available == 'true'
+        id: kanban-change
+        run: |
+          kanban_sha="$(git -C kanban rev-parse HEAD)"
+          config_sha="$(sha256sum deployment/kanban/next.config.ts | cut -d ' ' -f 1)"
+          deploy_key="${kanban_sha}:${config_sha}"
+          previous_key="$(cat pages/.deploy-state/kanban-demo-source.txt 2>/dev/null || true)"
+          echo "source-sha=${kanban_sha}" >> "$GITHUB_OUTPUT"
+          echo "deploy-key=${deploy_key}" >> "$GITHUB_OUTPUT"
+
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" && "$deploy_key" == "$previous_key" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "The Kanban source and deployment config have not changed."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node.js
+        if: steps.kanban-change.outputs.changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: kanban/frontend/package-lock.json
+
+      - name: Apply GitHub Pages Next.js config
+        if: steps.kanban-change.outputs.changed == 'true'
+        run: cp deployment/kanban/next.config.ts kanban/frontend/next.config.ts
+
+      - name: Install Kanban dependencies
+        if: steps.kanban-change.outputs.changed == 'true'
+        working-directory: kanban/frontend
+        run: npm ci
+
+      - name: Build Kanban static export
+        if: steps.kanban-change.outputs.changed == 'true'
+        working-directory: kanban/frontend
+        run: npm run build
+
+      - name: Publish Kanban under its own route
+        if: steps.kanban-change.outputs.changed == 'true'
+        env:
+          KANBAN_SHA: ${{ steps.kanban-change.outputs.source-sha }}
+          DEPLOY_KEY: ${{ steps.kanban-change.outputs.deploy-key }}
+        run: |
+          mkdir -p pages/kanban-demo pages/.deploy-state
+          rsync -a --delete kanban/frontend/out/ pages/kanban-demo/
+          printf '%s' "$DEPLOY_KEY" > pages/.deploy-state/kanban-demo-source.txt
+          touch pages/.nojekyll
+
+      - name: Commit and push Kanban deployment
+        if: steps.kanban-change.outputs.changed == 'true'
+        working-directory: pages
+        env:
+          KANBAN_SHA: ${{ steps.kanban-change.outputs.source-sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "The Kanban demo is already up to date."
+          else
+            git commit -m "Deploy OscarPallazhco/kanban@feature/kanban-mvp-antigravity (${KANBAN_SHA::7}) via personal-site"
+            git push origin HEAD:master
+          fi

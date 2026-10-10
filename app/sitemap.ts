@@ -11,5 +11,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    {
+      url: `${siteUrl}/kanban-demo/`,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
   ];
 }
