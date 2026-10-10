@@ -17,7 +17,7 @@ export function ContactSection() {
     <section className="contact-band" id="contact">
       <div className="page-width contact-inner">
         <div className="section-kicker">
-          <span>04</span>
+          <span>05</span>
           <span>{copy.contact.kicker}</span>
         </div>
         <div className="contact-content">

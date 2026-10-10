@@ -21,6 +21,7 @@ export function SiteHeader() {
         <a href="#about">{copy.navigation.about}</a>
         <a href="#career">{copy.navigation.career}</a>
         <a href="#work">{copy.navigation.work}</a>
+        <a href="#demos">{copy.navigation.demos}</a>
       </nav>
       <div className="header-actions">
         <div

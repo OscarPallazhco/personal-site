@@ -642,6 +642,86 @@ a {
   font: 14px var(--sans);
 }
 
+.demos-section {
+  padding: 96px 0 104px;
+  background: var(--paper-deep);
+}
+.demos-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 36px;
+  margin: 28px 0 42px;
+}
+.demos-heading h2 {
+  margin: 0;
+  font-size: 43px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.demos-heading p {
+  max-width: 350px;
+  margin: 0 0 4px;
+  color: #555a52;
+  font-size: 12px;
+  line-height: 1.85;
+}
+.demo-list {
+  border-top: 1px solid #c6c9bf;
+}
+.demo-row {
+  display: grid;
+  grid-template-columns: 85px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 25px 4px 27px;
+  border-bottom: 1px solid #c6c9bf;
+  transition:
+    background 0.2s ease,
+    padding 0.2s ease;
+}
+.demo-row:hover {
+  padding-right: 12px;
+  padding-left: 12px;
+  background: rgba(255, 255, 255, 0.38);
+}
+.demo-number {
+  align-self: start;
+  padding-top: 2px;
+  color: #88ad3e;
+  font: 12px var(--mono);
+}
+.demo-category {
+  margin: 0 0 9px;
+  color: #73796f;
+  font: 9px var(--mono);
+}
+.demo-copy h3 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 600;
+}
+.demo-description {
+  max-width: 615px;
+  margin: 8px 0 0;
+  color: #555a52;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.demo-action {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #526c26;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.demo-row:focus-visible {
+  outline: 2px solid #718e3d;
+  outline-offset: 3px;
+}
+
 .contact-band {
   background: var(--lime);
   padding: 73px 0 66px;
@@ -776,6 +856,9 @@ a {
   .about-columns {
     gap: 27px;
   }
+  .demos-heading {
+    gap: 24px;
+  }
   .capabilities-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -900,6 +983,9 @@ a {
   }
   .about,
   .work {
+    padding: 72px 0;
+  }
+  .demos-section {
     padding: 72px 0;
   }
   .about-grid {
@@ -1041,6 +1127,42 @@ a {
   .portfolio-note {
     margin-left: 39px;
     font-size: 8px;
+  }
+  .demos-heading {
+    display: block;
+    margin: 20px 0 29px;
+  }
+  .demos-heading h2 {
+    font-size: 34px;
+  }
+  .demos-heading p {
+    margin-top: 14px;
+    font-size: 11px;
+  }
+  .demo-row {
+    grid-template-columns: 33px 1fr;
+    gap: 6px;
+    padding: 19px 0 21px;
+  }
+  .demo-row:hover {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .demo-number,
+  .demo-category {
+    font-size: 8px;
+  }
+  .demo-copy h3 {
+    font-size: 17px;
+  }
+  .demo-description {
+    font-size: 11px;
+  }
+  .demo-action {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 7px;
+    font-size: 9px;
   }
   .contact-band {
     padding: 54px 0 45px;

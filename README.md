@@ -43,7 +43,7 @@ data/portfolio.ts    Profile links, career history, and project summaries
 public/              Static assets, including the profile portrait
 ```
 
-The route at `app/page.tsx` composes the page sections. Edit the content in `data/portfolio.ts`; styles are in `app/globals.css`.
+The route at `app/page.tsx` composes the page sections. Edit career and selected work content in `data/portfolio.ts`; standalone playable experiments are linked in `components/demos-section.tsx`. Styles are in `app/globals.css`.
 
 The header language selector switches the portfolio between English and Spanish during the current visit. The footer's update time is generated during the static build and displayed in Ecuador time.
 

@@ -5,6 +5,7 @@ export const siteCopy = {
       about: "About",
       career: "Career",
       work: "Selected work",
+      demos: "Demos",
       contact: "Let's talk",
       label: "Main navigation",
     },
@@ -50,6 +51,13 @@ export const siteCopy = {
         "The portfolio is taking shape. For now, here's a closer look at the products and challenges behind my recent work.",
       note: "Detailed case studies coming soon",
     },
+    demos: {
+      kicker: "INDEPENDENT DEMOS",
+      heading: "Built to be played with.",
+      intro:
+        "Small interactive experiments, shared as demos rather than client or product case studies.",
+      open: "Open demo",
+    },
     contact: {
       kicker: "HAVE A GOOD PROBLEM?",
       heading: ["Let's build", "what's next."],
@@ -70,6 +78,7 @@ export const siteCopy = {
       about: "Sobre mí",
       career: "Trayectoria",
       work: "Proyectos",
+      demos: "Demos",
       contact: "Hablemos",
       label: "Navegación principal",
     },
@@ -117,6 +126,13 @@ export const siteCopy = {
       intro:
         "Mi portafolio sigue creciendo. Por ahora, aquí puedes conocer los productos y retos detrás de algunos de mis proyectos recientes.",
       note: "Próximamente: casos de estudio detallados",
+    },
+    demos: {
+      kicker: "DEMOS INDEPENDIENTES",
+      heading: "Hechos para probarlos.",
+      intro:
+        "Pequeños experimentos interactivos, presentados como demos y no como casos de clientes o productos.",
+      open: "Abrir demo",
     },
     contact: {
       kicker: "¿TIENES UN BUEN RETO?",

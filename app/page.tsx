@@ -1,6 +1,7 @@
 import { AboutSection } from "@/components/about-section";
 import { CareerSection } from "@/components/career-section";
 import { ContactSection } from "@/components/contact-section";
+import { DemosSection } from "@/components/demos-section";
 import { HeroSection } from "@/components/hero-section";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -18,6 +19,7 @@ export default function Home() {
         <AboutSection />
         <CareerSection />
         <WorkSection />
+        <DemosSection />
         <ContactSection />
         <SiteFooter builtAt={builtAt} />
       </main>
